@@ -12,7 +12,7 @@
 .cover
 {
 	position: absolute;
-	background-color: red;
+	background-color: white;
 	width: 100px;
 	height: 100px;
 	opacity: 1;
@@ -38,8 +38,10 @@ var var1 = null;
 var var2 = null;
 var operator = null;
 var result = null;
-var max = 10;
+var max = 15;
 var point = 0;
+var targetPoints = 9;
+var pointArray = null;
 var blowUpSize = 0;
 var images = new Array (
 		"Pikachu.png",
@@ -53,7 +55,15 @@ var images = new Array (
 		"009.png",
 		"010.png",
 		"011.png",
-		"012.png"
+		"012.png",
+		"013.png",
+		"014.png",
+		"015.png",
+		"016.png",
+		"017.png",
+		"018.png",
+		"019.png",
+		"020.png"
 		
 );
 
@@ -65,6 +75,7 @@ var init = function()
 	point = 0;
 	itt = 0;
 	$("secretImg").src = images[Math.floor(Math.random()*images.length)];
+	pointArray = fillInRandomArray(9);
 	for(var i = 0; i < 9; i++)
 	{
 		var d = document.createElement("div");
@@ -115,6 +126,12 @@ var displayProblem = function()
 
 var applySolution = function()
 {
+	if (point >= targetPoints)
+	{
+		// Already reached the target
+		location.reload();
+		return;
+	}
 	if ($("solution").value == result)
 	{
 		if (operator == 0)
@@ -125,21 +142,23 @@ var applySolution = function()
 		{
 			//alert("Bravo!!!!!\n" + var1 + " - " + var2 + " = " + result);
 		}
-		$("cover" + point).style.opacity = 0;
+		$("cover" + pointArray[point]).style.opacity = 0;
 		point++;
 		displayProblem();
-		if (point >= 9)
+		if (point >= targetPoints)
 		{
 			$("secretImg").style.position = "absolute";	
 			$("secretImg").style.top = "-150px";	
 			$("secretImg").style.left = "-150px";
 			blowUpSize = 10;
+			$("resultView").style.borderStyle = "none";
 			setTimeout("blowUp();", 30)
 		}
 	}
 	else
 	{
 		alert("Oups... Il y a une erreur!");
+		$("solution").value = "";
 		$("solution").focus();
 
 	}
@@ -179,6 +198,26 @@ var blowDown = function()
 		
 	}
 		
+}
+
+var fillInRandomArray = function(size)
+{
+	var ret = new Array(size);
+	for(var i=0; i < size; i++)
+	{
+		ret[i] = -1;
+	}
+	
+	for(var i=0; i < size; i++)
+	{
+		var pos = Math.floor(Math.random()*size);
+		while(ret[pos] != -1)
+		{
+			pos = Math.floor(Math.random()*size);
+		}
+		ret[pos] = i;
+	}
+	return ret;
 }
 
 
