@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.equation
+{
+	border: 0px solid black;
+	font-size: 18px;
+}
+
+.cover
+{
+	position: absolute;
+	background-color: red;
+	width: 100px;
+	height: 100px;
+	opacity: 1.0;
+	z-index: 2;
+}
+#resultView
+{
+	position: absolute;
+	top: 200px;
+	left: 200px;
+	width: 300px;
+	height: 300px;
+	border: 1px green solid;
+}
+</style>
+<title>Insert title here</title>
+<script language="javascript">
+var $ = function(id)
+{
+	return document.getElementById(id);
+}
+var var1 = null;
+var var2 = null;
+var operator = null;
+var result = null;
+var max = 10;
+var point = 0;
+var blowUpSize = 0;
+var images = new Array (
+		//"Pikachu.png",
+		"002.png",
+		"003.jpg",
+		//"004.jpg",
+		//"005.png",
+		//"006.png",
+		"007.png",
+		"008.png"
+		
+);
+
+var lefts = new Array(0, 100, 200, 0, 100, 200, 0, 100, 200);
+var tops = new Array(0, 0, 0, 100, 100, 100, 200, 200, 200);
+
+var init = function()
+{
+	point = 0;
+	$("secretImg").src = images[Math.floor(Math.random()*images.length)];
+	for(var i = 0; i < 9; i++)
+	{
+		var d = document.createElement("div");
+		d.className = "cover";
+		d.id = "cover"+i;
+		d.style.left = lefts[i]-0 + "px";
+		d.style.top  = tops[i] + "px";
+		$("resultView").appendChild(d);
+		
+	}
+	displayProblem();
+}
+
+var displayProblem = function()
+{
+	var1 = Math.floor((Math.random() * max) + 1);
+	var2 = Math.floor((Math.random() * max) + 1);
+	operator = Math.floor(Math.random()*2);
+	if (operator == 0)
+	{
+		$("var1").value = var1;
+		$("var2").value = var2;
+		$("operator").value = "+";
+		result = var1+var2;
+	}
+	else if (operator == 1)
+	{
+		if (var1 < var2)
+		{
+			var temp = var1;
+			var1 = var2;
+			var2 = temp;
+		}
+		$("var1").value = var1;
+		$("var2").value = var2;
+		$("operator").value = "-";
+		result = var1-var2;
+	
+	}
+	else
+	{
+		alert("Error operator = " + operator);
+	}
+	$("solution").value = "";
+	$("solution").focus();
+}
+
+
+var applySolution = function()
+{
+	if ($("solution").value == result)
+	{
+		if (operator == 0)
+		{
+			//alert("Bravo!!!!!\n" + var1 + " + " + var2 + " = " + result);
+		}
+		else if (operator == 1)
+		{
+			//alert("Bravo!!!!!\n" + var1 + " - " + var2 + " = " + result);
+		}
+		$("cover" + point).style.opacity = 0;
+		point++;
+		displayProblem();
+		if (point >= 9)
+		{
+			$("secretImg").style.position = "absolute";	
+			$("secretImg").style.top = "-150px";	
+			$("secretImg").style.left = "-150px";
+			blowUpSize = 10;
+			setTimeout("blowUp();", 30)
+		}
+	}
+	else
+	{
+		alert("Oups... Il y a une erreur!")
+	}
+}
+
+
+var blowUp = function()
+{
+	$("secretImg").style.width = blowUpSize + "px";
+	$("secretImg").style.height = blowUpSize + "px";
+	if (blowUpSize < 600)
+	{
+		blowUpSize +=5;
+		setTimeout("blowUp();", 10)
+	}
+		
+}
+</script>
+</head>
+<body onload="init();">
+<div id="gameCanvas">
+	<input class="equation" id="var1" size="3" value="..."/>
+	<input class="equation" id="operator" size="2" value="..."/>
+	<input class="equation" id="var2" size="3" value="..." />
+	=
+	<input id="solution">
+	<input type="button" value="?" onclick="applySolution();"/>
+
+</div>
+<div id="resultView">
+	<img id="secretImg"  width="300px" height="300px"/>
+</div>
+</body>
+</html>
